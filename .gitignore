@@ -1,0 +1,50 @@
+# zavisnosti
+node_modules/
+.pnpm-store/
+
+# tajne — nikad u git (CLAUDE.md "Ne radi")
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# build
+dist/
+build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# expo
+.expo/
+.expo-shared/
+android/
+ios/
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+
+# supabase
+supabase/.branches/
+supabase/.temp/
+
+# testovi i alati
+coverage/
+.vitest/
+.eslintcache
+
+# windows / editori
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# logovi
+*.log
+npm-debug.log*
+pnpm-debug.log*
