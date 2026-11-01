@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+
+# pnpm 10+ ne pokreće install skripte dok se paket ne navede ovde.
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - supabase
+  - unrs-resolver

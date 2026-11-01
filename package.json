@@ -1,0 +1,29 @@
+{
+  "name": "apartclean",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@12.16.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:types": "supabase gen types typescript --local > packages/shared/src/types/database.ts",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10",
+    "supabase": "^2.122.0",
+    "turbo": "^2.11.10",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5"
+  }
+}

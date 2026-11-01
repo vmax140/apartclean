@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Semantičke boje za shadcn/ui. Vrednosti su iz palete u packages/shared/src/tokens.json. */
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #1c212c;
+    --card: #ffffff;
+    --card-foreground: #1c212c;
+    --popover: #ffffff;
+    --popover-foreground: #1c212c;
+    --primary: #1e4679;
+    --primary-foreground: #ffffff;
+    --secondary: #eef0f4;
+    --secondary-foreground: #2b3242;
+    --muted: #f7f8fa;
+    --muted-foreground: #6c7891;
+    --accent: #1bac6f;
+    --accent-foreground: #ffffff;
+    --destructive: #d1333c;
+    --destructive-foreground: #ffffff;
+    --border: #dde1e8;
+    --input: #dde1e8;
+    --ring: #336fb3;
+  }
+
+  .dark {
+    --background: #11141c;
+    --foreground: #eef0f4;
+    --card: #1c212c;
+    --card-foreground: #eef0f4;
+    --popover: #1c212c;
+    --popover-foreground: #eef0f4;
+    --primary: #578fcc;
+    --primary-foreground: #0e1f36;
+    --secondary: #2b3242;
+    --secondary-foreground: #eef0f4;
+    --muted: #1c212c;
+    --muted-foreground: #95a0b3;
+    --accent: #3fc68a;
+    --accent-foreground: #04281c;
+    --destructive: #f2666d;
+    --destructive-foreground: #11141c;
+    --border: #3f485c;
+    --input: #3f485c;
+    --ring: #578fcc;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
