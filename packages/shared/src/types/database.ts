@@ -1852,6 +1852,7 @@ export type Database = {
     };
     Functions: {
       account_is_active: { Args: Record<PropertyKey, never>; Returns: boolean };
+      anonymize_account: { Args: { target_user: string }; Returns: undefined };
       cleaner_can_see_task: { Args: { target_task: string }; Returns: boolean };
       get_access_info: {
         Args: { target_task: string };
@@ -1871,6 +1872,17 @@ export type Database = {
       is_assigned_cleaner: { Args: { target_task: string }; Returns: boolean };
       owns_property: { Args: { target_property: string }; Returns: boolean };
       owns_task: { Args: { target_task: string }; Returns: boolean };
+      record_legal_acceptance: {
+        Args: {
+          client_agent: string;
+          client_ip: unknown;
+          client_version: string;
+          document_ids: string[];
+          target_user: string;
+        };
+        Returns: undefined;
+      };
+      require_adult_signup: { Args: { event: Json }; Returns: Json };
       safe_uuid: { Args: { value: string }; Returns: string };
       set_initial_roles: {
         Args: { roles: Database['public']['Enums']['app_role'][] };

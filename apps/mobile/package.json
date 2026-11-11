@@ -12,10 +12,12 @@
   },
   "dependencies": {
     "@apartclean/shared": "workspace:*",
+    "@supabase/supabase-js": "^2.119.0",
     "expo": "^58.0.22",
     "expo-constants": "~58.0.14",
     "expo-linking": "~58.0.15",
     "expo-router": "~58.0.29",
+    "expo-secure-store": "~58.0.2",
     "expo-status-bar": "~58.0.4",
     "nativewind": "^4.2.7",
     "react": "19.3.0",
@@ -25,9 +27,11 @@
     "react-native-reanimated": "4.7.1",
     "react-native-safe-area-context": "~5.10.1",
     "react-native-screens": "~4.30.1",
+    "react-native-url-polyfill": "^4.0.0",
     "react-native-web": "^0.21.4"
   },
   "devDependencies": {
+    "@types/react": "19.3.0",
     "eslint": "^9.39.5",
     "eslint-config-expo": "^58.0.4",
     "prettier-plugin-tailwindcss": "^0.8.1",

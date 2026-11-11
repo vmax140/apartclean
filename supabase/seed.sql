@@ -31,9 +31,14 @@ begin
       ('00000000-0000-4000-a000-000000000006'::uuid, 'spremacica3@apartclean.test','Sanja Spremačica')
     ) as v(id, email, full_name)
   loop
+    -- Kolone za tokene moraju biti prazan string, ne NULL. GoTrue ih čita u Go
+    -- tipove koji ne primaju NULL, pa bi svaki magic link nad seedovanim nalogom
+    -- vratio 500 „Database error finding user".
     insert into auth.users (
       instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
-      raw_app_meta_data, raw_user_meta_data, created_at, updated_at
+      raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+      confirmation_token, recovery_token, email_change_token_new, email_change,
+      email_change_token_current, phone_change, phone_change_token, reauthentication_token
     ) values (
       '00000000-0000-0000-0000-000000000000',
       seeded.id,
@@ -45,7 +50,8 @@ begin
       '{"provider":"email","providers":["email"]}'::jsonb,
       jsonb_build_object('full_name', seeded.full_name),
       now(),
-      now()
+      now(),
+      '', '', '', '', '', '', '', ''
     )
     on conflict (id) do nothing;
 

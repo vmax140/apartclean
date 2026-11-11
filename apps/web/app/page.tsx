@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   DEFAULT_LOCALE,
   TASK_STATUS_TONE,
@@ -42,9 +43,10 @@ export default function Home() {
         ))}
       </div>
 
-      <p className="text-sm text-muted-foreground">
-        Faza 0: temelj projekta. Prijava, apartmani i zadaci stižu u Fazi 1.
-      </p>
+      <div className="flex flex-wrap gap-3">
+        <Link className="inline-flex min-h-11 items-center rounded-md bg-primary px-4 text-primary-foreground" href="/prijava">{t('auth.signIn')}</Link>
+        <Link className="inline-flex min-h-11 items-center rounded-md border px-4" href="/registracija">{t('auth.signUp')}</Link>
+      </div>
     </main>
   );
 }
