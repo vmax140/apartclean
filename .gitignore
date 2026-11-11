@@ -48,3 +48,6 @@ desktop.ini
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+# Lokalna podesavanja Claude Code-a
+.claude/

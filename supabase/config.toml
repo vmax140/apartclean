@@ -384,8 +384,10 @@ inspector_port = 8083
 # The Deno major version to use.
 deno_version = 2
 
-# [edge_runtime.secrets]
-# secret_key = "env(SECRET_VALUE)"
+[edge_runtime.secrets]
+# Kljuc za sifrovanje pristupnih podataka apartmana (docs/DECISIONS.md, odluka 4).
+# Lokalno dolazi iz .env u korenu; na pravom projektu iz supabase secrets set.
+PROPERTY_SECRET_KEY = "env(PROPERTY_SECRET_KEY)"
 
 [analytics]
 enabled = true

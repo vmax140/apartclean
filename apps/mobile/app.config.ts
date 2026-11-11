@@ -19,7 +19,19 @@ const config: ExpoConfig = {
     bundler: 'metro',
     output: 'static',
   },
-  plugins: ['expo-router', 'expo-status-bar', 'expo-secure-store'],
+  plugins: [
+    'expo-router',
+    'expo-status-bar',
+    'expo-secure-store',
+    [
+      'expo-location',
+      {
+        // Objašnjenje koje korisnik vidi kada sistem traži dozvolu.
+        locationWhenInUsePermission:
+          'ApartClean koristi lokaciju da upiše tačnu tačku apartmana i da potvrdi dolazak spremačice.',
+      },
+    ],
+  ],
   experiments: {
     typedRoutes: true,
   },

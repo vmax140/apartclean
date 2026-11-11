@@ -8,7 +8,8 @@
     ".": "./src/index.ts",
     "./tokens.json": "./src/tokens.json",
     "./tailwind-preset": "./tailwind-preset.js",
-    "./use-account": "./src/use-account.ts"
+    "./use-account": "./src/use-account.ts",
+    "./property": "./src/property.ts"
   },
   "scripts": {
     "lint": "eslint .",

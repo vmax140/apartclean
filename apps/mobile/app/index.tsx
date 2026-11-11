@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { AppState, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Linking from 'expo-linking';
+import { router } from 'expo-router';
 import Constants from 'expo-constants';
 import { t, type AppRole } from '@apartclean/shared';
 import { useAccount, type AuthMode } from '@apartclean/shared/use-account';
@@ -139,6 +140,8 @@ function ConfiguredAccount() {
           <Text className={textClass}>{t('auth.roleSwitch')}</Text>
           {data.roles.map((role) => <Choice key={role} label={t(`role.${role}`)} selected={activeRole === role}
             toggle={() => account.setActiveRole(role)} />)}
+          {data.roles.includes('owner') && <Action label={t('property.title')}
+            onPress={() => router.push('/apartmani')} />}
           {confirmDelete ? <>
             <Text className={textClass}>{t('auth.deletePrompt')}</Text>
             <Action label={t('auth.confirmDelete')} disabled={busy} onPress={() => void account.signOut(true)} />

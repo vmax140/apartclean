@@ -1854,12 +1854,22 @@ export type Database = {
       account_is_active: { Args: Record<PropertyKey, never>; Returns: boolean };
       anonymize_account: { Args: { target_user: string }; Returns: undefined };
       cleaner_can_see_task: { Args: { target_task: string }; Returns: boolean };
+      create_property: { Args: { payload: Json }; Returns: string };
       get_access_info: {
         Args: { target_task: string };
         Returns: {
           key_instructions: string;
           lockbox_code_encrypted: string;
           property_id: string;
+          wifi_name: string;
+          wifi_password_encrypted: string;
+        }[];
+      };
+      get_property_access_for_owner: {
+        Args: { owner: string; target_property: string };
+        Returns: {
+          key_instructions: string;
+          lockbox_code_encrypted: string;
           wifi_name: string;
           wifi_password_encrypted: string;
         }[];
@@ -1886,6 +1896,17 @@ export type Database = {
       safe_uuid: { Args: { value: string }; Returns: string };
       set_initial_roles: {
         Args: { roles: Database['public']['Enums']['app_role'][] };
+        Returns: undefined;
+      };
+      set_property_access: {
+        Args: {
+          instructions: string;
+          lockbox: string;
+          owner: string;
+          target_property: string;
+          wifi: string;
+          wifi_secret: string;
+        };
         Returns: undefined;
       };
     };
