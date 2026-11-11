@@ -206,3 +206,38 @@ srpski AI tekst. Prevod AI poruka je i tako u SPEC sekciji 11 kao van opsega.
   šema se inače ne menja.
 - `subscriptions.properties_limit` se nigde ne primenjuje. U pilotu ostaje samo
   podatak za admina, bez provere pri dodavanju apartmana.
+
+---
+
+## Dopuna posle Faze 1D
+
+### 19. Dokumenti zahteva o kom se nikad ne odluči
+
+SPEC sekcija 9 traži da se slika dokumenta i selfi brišu „odmah posle odluke
+administratora", ali ne kaže šta biva ako odluke nema: spremačica odustane,
+administrator ne otvori red čekanja, ili stigne nov zahtev pre nego što je stari
+rešen. Bez pravila lični dokumenti ostaju u storage-u zauvek, suprotno politici
+privatnosti.
+
+**Odluka:** dnevni posao `purge-verification-docs` (pg_cron, 3:15) briše:
+
+1. fajlove zahteva koji su na čekanju duže od **7 dana** — zahtev se označava kao
+   odbijen sa objašnjenjem da je istekao, da administrator ne gleda prazne okvire;
+2. fajlove zahteva o kojima je odlučeno a brisanje nije prošlo;
+3. fajlove koji u storage-u stoje bez ijednog zahteva.
+
+Uz to, triger `verification_requests_supersede` odmah poništava stari zahtev na
+čekanju kada stigne nov od iste spremačice, pa dnevni posao pokupi njegove fajlove.
+
+**Tiče se:** 1D, 2B (tabela cron poslova).
+
+**Podešavanje na pravom projektu.** Posao zove Edge Function preko pg_net, a
+adresu i ključ čita iz vault-a — ne iz koda. Pre prvog pokretanja treba jednom
+izvršiti, sa svojim vrednostima:
+
+```sql
+select vault.create_secret('https://<ref>.supabase.co/functions/v1', 'edge_functions_url');
+select vault.create_secret('<service_role_key>', 'service_role_key');
+```
+
+Lokalno se to ne radi: testovi zovu funkciju direktno, pa ključ nigde ne ulazi u git.

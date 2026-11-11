@@ -1895,6 +1895,7 @@ export type Database = {
     Functions: {
       account_is_active: { Args: Record<PropertyKey, never>; Returns: boolean };
       anonymize_account: { Args: { target_user: string }; Returns: undefined };
+      call_edge_function: { Args: { function_name: string; payload?: Json }; Returns: number };
       cleaner_can_see_task: { Args: { target_task: string }; Returns: boolean };
       create_property: { Args: { payload: Json }; Returns: string };
       decide_verification: {

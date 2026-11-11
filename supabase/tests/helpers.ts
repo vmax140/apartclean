@@ -62,7 +62,7 @@ export const SEED = {
 export function localApi() {
   const status = JSON.parse(
     execSync('supabase status -o json', { stdio: ['ignore', 'pipe', 'pipe'] }).toString(),
-  ) as { API_URL: string; ANON_KEY: string; MAILPIT_URL: string };
+  ) as { API_URL: string; ANON_KEY: string; MAILPIT_URL: string; SERVICE_ROLE_KEY: string };
   if (new URL(status.API_URL).hostname !== '127.0.0.1') {
     throw new Error('Integracioni test traži lokalni Supabase');
   }
