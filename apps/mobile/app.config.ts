@@ -24,6 +24,14 @@ const config: ExpoConfig = {
     'expo-status-bar',
     'expo-secure-store',
     [
+      'expo-camera',
+      {
+        cameraPermission:
+          'ApartClean koristi kameru za slikanje dokumenta pri verifikaciji i za slike posle čišćenja.',
+        recordAudioAndroid: false,
+      },
+    ],
+    [
       'expo-location',
       {
         // Objašnjenje koje korisnik vidi kada sistem traži dozvolu.

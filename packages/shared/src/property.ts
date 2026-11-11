@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database, Json } from './types/database';
 import type { NewProperty } from './schemas/property';
+import { randomId } from './id';
 
 export type PropertyClient = SupabaseClient<Database>;
 export type Property = Database['public']['Tables']['properties']['Row'];
@@ -86,18 +87,6 @@ export async function createProperty(client: PropertyClient, input: NewProperty)
   return data;
 }
 
-/**
- * UUID za ime fajla. Web i Node imaju crypto.randomUUID, React Native ga nema
- * bez dodatka — zato rezervni put. Ovo je ime fajla, ne tajna.
- */
-function randomId() {
-  const source = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto;
-  if (typeof source?.randomUUID === 'function') return source.randomUUID();
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
-    const value = Math.floor(Math.random() * 16);
-    return (char === 'x' ? value : (value & 0x3) | 0x8).toString(16);
-  });
-}
 
 /** Putanja po docs/DECISIONS.md, odluka 5. */
 export function referencePhotoPath(propertyId: string, roomId: string, photoId: string) {

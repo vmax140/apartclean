@@ -354,6 +354,13 @@ export type Database = {
             foreignKeyName: 'cleaner_regions_cleaner_id_fkey';
             columns: ['cleaner_id'];
             isOneToOne: false;
+            referencedRelation: 'cleaner_directory';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'cleaner_regions_cleaner_id_fkey';
+            columns: ['cleaner_id'];
+            isOneToOne: false;
             referencedRelation: 'cleaner_profiles';
             referencedColumns: ['user_id'];
           },
@@ -1810,6 +1817,41 @@ export type Database = {
       };
     };
     Views: {
+      cleaner_directory: {
+        Row: {
+          avatar_url: string | null;
+          base_price_rsd: number | null;
+          bio: string | null;
+          brings_supplies: boolean;
+          completed_jobs: number;
+          full_name: string;
+          has_car: boolean;
+          is_verified: boolean | null;
+          languages: string[];
+          rating_avg: number | null;
+          rating_count: number;
+          region_ids: number[] | null;
+          reliability_pct: number | null;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Relationships: [
+          {
+            foreignKeyName: 'cleaner_profiles_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: true;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'cleaner_profiles_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: true;
+            referencedRelation: 'public_profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       property_cards: {
         Row: {
           complex_name: string | null;
@@ -1855,6 +1897,10 @@ export type Database = {
       anonymize_account: { Args: { target_user: string }; Returns: undefined };
       cleaner_can_see_task: { Args: { target_task: string }; Returns: boolean };
       create_property: { Args: { payload: Json }; Returns: string };
+      decide_verification: {
+        Args: { approve: boolean; decided_by: string; reason: string; request_id: string };
+        Returns: string;
+      };
       get_access_info: {
         Args: { target_task: string };
         Returns: {
@@ -1894,6 +1940,7 @@ export type Database = {
       };
       require_adult_signup: { Args: { event: Json }; Returns: Json };
       safe_uuid: { Args: { value: string }; Returns: string };
+      save_cleaner_profile: { Args: { payload: Json }; Returns: undefined };
       set_initial_roles: {
         Args: { roles: Database['public']['Enums']['app_role'][] };
         Returns: undefined;
@@ -1907,6 +1954,10 @@ export type Database = {
           wifi: string;
           wifi_secret: string;
         };
+        Returns: undefined;
+      };
+      write_audit: {
+        Args: { action: string; data?: Json; entity: string; entity_id: string };
         Returns: undefined;
       };
     };

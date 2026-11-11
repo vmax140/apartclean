@@ -142,6 +142,8 @@ function ConfiguredAccount() {
             toggle={() => account.setActiveRole(role)} />)}
           {data.roles.includes('owner') && <Action label={t('property.title')}
             onPress={() => router.push('/apartmani')} />}
+          {data.roles.includes('cleaner') && <Action label={t('verify.title')}
+            onPress={() => router.push('/verifikacija')} />}
           {confirmDelete ? <>
             <Text className={textClass}>{t('auth.deletePrompt')}</Text>
             <Action label={t('auth.confirmDelete')} disabled={busy} onPress={() => void account.signOut(true)} />
