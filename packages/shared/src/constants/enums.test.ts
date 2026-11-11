@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { APP_ROLES, ROOM_TYPES, TASK_STATUSES } from './enums';
 import { ACTIVE_TASK_STATUSES, TASK_STATUS_TONE, isTaskStatus } from './task-status';
-import { DICTIONARIES, LOCALES, t } from '../i18n/index';
+import { DICTIONARIES, LOCALES, pluralForm, t } from '../i18n/index';
 
 // Ove liste su prepisane iz docs/SPEC.md, sekcija 3. Ako migracija u Fazi 1A
 // odstupi od njih, ovaj test puca pre nego što greška stigne u aplikaciju.
@@ -79,5 +79,38 @@ describe('i18n', () => {
   it('podrazumevani jezik je srpski latinica', () => {
     expect(t('taskStatus.ready')).toBe('Spreman za goste');
     expect(t('taskStatus.ready', 'en')).toBe('Ready for guests');
+  });
+});
+
+describe('množina (srpski ima tri oblika uz broj)', () => {
+  it('bira oblik po poslednjoj cifri', () => {
+    expect(pluralForm(1)).toBe('one');
+    expect(pluralForm(21)).toBe('one');
+    expect(pluralForm(2)).toBe('few');
+    expect(pluralForm(4)).toBe('few');
+    expect(pluralForm(23)).toBe('few');
+    expect(pluralForm(5)).toBe('other');
+    expect(pluralForm(0)).toBe('other');
+  });
+
+  it('jedanaest i dvanaest su izuzeci', () => {
+    expect(pluralForm(11)).toBe('other');
+    expect(pluralForm(12)).toBe('other');
+    expect(pluralForm(14)).toBe('other');
+    expect(pluralForm(111)).toBe('other');
+  });
+
+  it('engleski ima samo jedninu i množinu', () => {
+    expect(pluralForm(1, 'en')).toBe('one');
+    expect(pluralForm(2, 'en')).toBe('other');
+    expect(pluralForm(3, 'en')).toBe('other');
+  });
+
+  it('svaki oblik ima prevod na oba jezika', () => {
+    for (const locale of LOCALES) {
+      for (const form of ['one', 'few', 'other'] as const) {
+        expect(t(`property.rooms.${form}`, locale, { broj: 3 })).toContain('3');
+      }
+    }
   });
 });

@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import * as Location from 'expo-location';
-import { DEFAULT_ROOMS, newPropertySchema, t, type TranslationKey } from '@apartclean/shared';
+import {
+  DEFAULT_ROOMS,
+  newPropertySchema,
+  pluralForm,
+  t,
+  type TranslationKey,
+} from '@apartclean/shared';
 import {
   createProperty,
   listProperties,
@@ -119,7 +125,7 @@ export default function Properties() {
         <View key={row.id} className="gap-1 rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
           <Text className="font-medium text-neutral-900 dark:text-neutral-50">{row.name}</Text>
           <Text className={labelText}>{row.address}</Text>
-          <Text className={labelText}>{t('property.rooms', undefined, { broj: row.roomCount })}</Text>
+          <Text className={labelText}>{t(`property.rooms.${pluralForm(row.roomCount)}`, undefined, { broj: row.roomCount })}</Text>
         </View>
       ))}
 

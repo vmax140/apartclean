@@ -41,3 +41,18 @@ export function createTranslator(locale: Locale) {
   return (key: TranslationKey, params?: Readonly<Record<string, string | number>>) =>
     t(key, locale, params);
 }
+
+/**
+ * Srpski ima tri oblika uz broj: 1 soba, 2–4 sobe, 5+ soba.
+ * Engleski koristi 'one' i 'other', pa 'few' pada na 'other'.
+ */
+export type PluralForm = 'one' | 'few' | 'other';
+
+export function pluralForm(count: number, locale: Locale = DEFAULT_LOCALE): PluralForm {
+  if (locale === 'en') return count === 1 ? 'one' : 'other';
+  const mod10 = Math.abs(count) % 10;
+  const mod100 = Math.abs(count) % 100;
+  if (mod10 === 1 && mod100 !== 11) return 'one';
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'few';
+  return 'other';
+}

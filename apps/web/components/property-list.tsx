@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { t } from '@apartclean/shared';
+import { pluralForm, t } from '@apartclean/shared';
 import { listProperties, listRegions, type Region } from '@apartclean/shared/property';
 import { buttonVariants } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
@@ -58,7 +58,7 @@ export function PropertyList() {
                   {[regionName(row.region_id), row.complex_name].filter(Boolean).join(' · ')}
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  {t('property.rooms', undefined, { broj: row.roomCount })}
+                  {t(`property.rooms.${pluralForm(row.roomCount)}`, undefined, { broj: row.roomCount })}
                 </span>
               </span>
               {!row.is_active && (
