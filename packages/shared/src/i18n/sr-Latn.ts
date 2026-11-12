@@ -330,6 +330,48 @@ export const srLatn = {
   'report.send': 'Pošalji prijavu',
   'report.sent': 'Prijava je poslata vlasniku.',
   'report.failed': 'Prijava nije poslata.',
+
+  'gallery.title': 'Slike čišćenja',
+  'gallery.none': 'Nema slika.',
+  'gallery.before': 'Referenca',
+  'gallery.after': 'Posle čišćenja',
+  'gallery.noRoom': 'Bez sobe',
+
+  'review.title': 'Oceni',
+  'review.rating': 'Ukupna ocena',
+  'review.quality': 'Kvalitet',
+  'review.punctuality': 'Tačnost',
+  'review.communication': 'Komunikacija',
+  'review.comment': 'Komentar',
+  'review.send': 'Pošalji ocenu',
+  'review.sent': 'Ocena je poslata.',
+  'review.waiting': 'Tvoja ocena čeka da i druga strana oceni.',
+  'review.published': 'Ocene su objavljene.',
+  'review.failed': 'Ocena nije poslata.',
+  'review.already': 'Već si ocenio ovaj posao.',
+  'review.onlyCompleted': 'Ocenjuje se tek završen posao.',
+
+  'payment.title': 'Plaćanje',
+  'payment.unpaid': 'Nije plaćeno',
+  'payment.paid': 'Plaćeno',
+  'payment.markPaid': 'Označi kao plaćeno',
+  'payment.markUnpaid': 'Poništi oznaku',
+  'payment.note': 'U pilotu se plaća direktno spremačici; aplikacija samo beleži.',
+
+  'messages.title': 'Poruke',
+  'messages.none': 'Nema poruka.',
+  'messages.placeholder': 'Napiši poruku…',
+  'messages.send': 'Pošalji',
+  'messages.failed': 'Poruka nije poslata.',
+
+  'reports.title': 'Prijave štete',
+  'reports.none': 'Nema prijava.',
+  'reports.open': 'Nova',
+  'reports.acknowledged': 'Primljeno k znanju',
+  'reports.resolved': 'Rešeno',
+  'reports.acknowledge': 'Primi k znanju',
+  'reports.resolve': 'Označi rešenim',
+  'reports.failed': 'Izmena nije sačuvana.',
 } as const;
 
 export type TranslationKey = keyof typeof srLatn;

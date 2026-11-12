@@ -14,7 +14,8 @@
     "./task": "./src/task.ts",
     "./notification": "./src/notification.ts",
     "./upload-queue": "./src/upload-queue.ts",
-    "./field": "./src/field.ts"
+    "./field": "./src/field.ts",
+    "./closing": "./src/closing.ts"
   },
   "scripts": {
     "lint": "eslint .",

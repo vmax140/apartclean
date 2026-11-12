@@ -14,7 +14,11 @@ import {
   requestFixes,
   type TaskDetails as Details,
 } from '@apartclean/shared/task';
+import { markPaid } from '@apartclean/shared/closing';
 import { StatusBadge } from '@/components/task-list';
+import { TaskGallery } from '@/components/task-gallery';
+import { TaskMessages } from '@/components/task-messages';
+import { TaskReview } from '@/components/task-review';
 
 // Sekunde ništa ne znače vlasniku, a prave šum u svakom redu.
 const DATE_TIME: Intl.DateTimeFormatOptions = {
@@ -40,6 +44,7 @@ export function TaskDetails({ id }: { id: string }) {
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const client = supabase;
@@ -47,8 +52,10 @@ export function TaskDetails({ id }: { id: string }) {
     let active = true;
     void (async () => {
       try {
-        const data = await getTask(client, id);
-        if (active) setDetails(data);
+        const [data, session] = await Promise.all([getTask(client, id), client.auth.getUser()]);
+        if (!active) return;
+        setDetails(data);
+        setUserId(session.data.user?.id ?? null);
       } catch {
         if (active) setMessage('task.loadFailed');
       }
@@ -164,6 +171,38 @@ export function TaskDetails({ id }: { id: string }) {
           ))}
         </ol>
       </section>
+
+      {/* Slike, poruke i ocene imaju smisla tek kad je posao krenuo. */}
+      {task.arrived_at && <TaskGallery taskId={task.id} propertyId={task.property_id} />}
+
+      {(task.status === 'ready' || task.status === 'completed') && (
+        <section className="grid gap-2 rounded-lg border p-4">
+          <h2 className="text-lg font-medium">{t('payment.title')}</h2>
+          <p className="text-sm text-muted-foreground">{t('payment.note')}</p>
+          <p className="text-sm">
+            {task.payment_status === 'unpaid' ? t('payment.unpaid') : t('payment.paid')}
+          </p>
+          <Button
+            variant="outline"
+            disabled={busy}
+            onClick={() => {
+              const client = supabase;
+              if (!client) return;
+              setBusy(true);
+              void markPaid(client, task.id, task.payment_status === 'unpaid')
+                .then(() => setReloadToken((value) => value + 1))
+                .catch(() => setMessage('action.failed'))
+                .finally(() => setBusy(false));
+            }}
+          >
+            {task.payment_status === 'unpaid' ? t('payment.markPaid') : t('payment.markUnpaid')}
+          </Button>
+        </section>
+      )}
+
+      {task.cleaner_id && <TaskMessages taskId={task.id} userId={userId} />}
+
+      {task.status === 'completed' && <TaskReview taskId={task.id} userId={userId} />}
 
       {actions.length > 0 && (
         <section className="grid gap-3">

@@ -8,6 +8,12 @@ import {
   signReferencePhotos,
   type PropertyDetails as Details,
 } from '@apartclean/shared/property';
+import {
+  listPropertyReports,
+  setReportStatus,
+  type PropertyReport,
+} from '@apartclean/shared/closing';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
 
 // Tabovi po SPEC sekciji 7: detalji, sobe i referentne slike, checklista,
@@ -23,13 +29,16 @@ const TABS = [
   'tab.reports',
 ] as const;
 
-const LATER: TranslationKey[] = ['tab.calendar', 'tab.history', 'tab.reports'];
+// Kalendar i istorija zavise od faza koje tek dolaze; prijave štete stižu sada.
+const LATER: TranslationKey[] = ['tab.calendar', 'tab.history'];
 
 export function PropertyDetails({ id }: { id: string }) {
   const [details, setDetails] = useState<Details | null>(null);
   const [links, setLinks] = useState<Map<string, string>>(new Map());
   const [tab, setTab] = useState<(typeof TABS)[number]>('tab.details');
   const [failed, setFailed] = useState(false);
+  const [reports, setReports] = useState<PropertyReport[]>([]);
+  const [reportsToken, setReportsToken] = useState(0);
 
   useEffect(() => {
     if (!supabase) return;
@@ -40,6 +49,18 @@ export function PropertyDetails({ id }: { id: string }) {
       })
       .catch(() => setFailed(true));
   }, [id]);
+
+  useEffect(() => {
+    const client = supabase;
+    if (!client) return;
+    let active = true;
+    void listPropertyReports(client, id)
+      .then((data) => active && setReports(data))
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [id, reportsToken]);
 
   if (failed) {
     return (
@@ -155,6 +176,55 @@ export function PropertyDetails({ id }: { id: string }) {
             </p>
           ))}
           <p className="text-sm text-muted-foreground">{t('tab.empty')}</p>
+        </section>
+      )}
+
+      {tab === 'tab.reports' && (
+        <section className="grid gap-3">
+          {reports.length === 0 && <p className="text-muted-foreground">{t('reports.none')}</p>}
+          {reports.map((report) => (
+            <article key={report.id} className="grid gap-2 rounded-lg border p-4">
+              <p className="flex flex-wrap items-center justify-between gap-2">
+                <span className="font-medium">{t(`report.${report.category}`)}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t(`reports.${report.status as 'open' | 'acknowledged' | 'resolved'}`)}
+                  {' · '}
+                  {new Date(report.created_at).toLocaleDateString('sr-Latn-RS')}
+                </span>
+              </p>
+              <p className="text-sm">{report.description}</p>
+              {report.status !== 'resolved' && (
+                <div className="flex flex-wrap gap-2">
+                  {report.status === 'open' && (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        const client = supabase;
+                        if (!client) return;
+                        void setReportStatus(client, report.id, 'acknowledged').then(() =>
+                          setReportsToken((value) => value + 1),
+                        );
+                      }}
+                    >
+                      {t('reports.acknowledge')}
+                    </Button>
+                  )}
+                  <Button
+                    variant="accent"
+                    onClick={() => {
+                      const client = supabase;
+                      if (!client) return;
+                      void setReportStatus(client, report.id, 'resolved').then(() =>
+                        setReportsToken((value) => value + 1),
+                      );
+                    }}
+                  >
+                    {t('reports.resolve')}
+                  </Button>
+                </div>
+              )}
+            </article>
+          ))}
         </section>
       )}
 

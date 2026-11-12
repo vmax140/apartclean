@@ -2009,6 +2009,10 @@ export type Database = {
         Args: { target_task: string };
         Returns: Database['public']['Enums']['task_status'];
       };
+      mark_task_paid: {
+        Args: { paid?: boolean; target_task: string };
+        Returns: Database['public']['Enums']['payment_status'];
+      };
       materialize_checklist: { Args: { target_task: string }; Returns: number };
       next_team_cleaner: { Args: { for_owner: string; target_task: string }; Returns: string };
       notify: {
@@ -2105,6 +2109,21 @@ export type Database = {
           wifi_secret: string;
         };
         Returns: undefined;
+      };
+      set_report_status: {
+        Args: { new_status: string; target_report: string };
+        Returns: undefined;
+      };
+      submit_review: {
+        Args: {
+          comment?: string;
+          communication?: number;
+          punctuality?: number;
+          quality?: number;
+          rating: number;
+          target_task: string;
+        };
+        Returns: string;
       };
       submit_task: {
         Args: { target_task: string };
