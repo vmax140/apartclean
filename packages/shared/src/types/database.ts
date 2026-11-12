@@ -1893,15 +1893,42 @@ export type Database = {
       };
     };
     Functions: {
+      accept_offer: {
+        Args: { target_task: string };
+        Returns: Database['public']['Enums']['task_status'];
+      };
       account_is_active: { Args: Record<PropertyKey, never>; Returns: boolean };
       anonymize_account: { Args: { target_user: string }; Returns: undefined };
+      auto_complete_tasks: { Args: Record<PropertyKey, never>; Returns: number };
       call_edge_function: { Args: { function_name: string; payload?: Json }; Returns: number };
+      cancel_task: {
+        Args: { reason: string; target_task: string };
+        Returns: Database['public']['Enums']['task_status'];
+      };
+      check_in: {
+        Args: { lat: number; lng: number; reason?: string; target_task: string };
+        Returns: Database['public']['Enums']['task_status'];
+      };
       cleaner_can_see_task: { Args: { target_task: string }; Returns: boolean };
+      complete_task: {
+        Args: { target_task: string };
+        Returns: Database['public']['Enums']['task_status'];
+      };
       create_property: { Args: { payload: Json }; Returns: string };
       decide_verification: {
         Args: { approve: boolean; decided_by: string; reason: string; request_id: string };
         Returns: string;
       };
+      decline_offer: {
+        Args: { target_task: string };
+        Returns: Database['public']['Enums']['task_status'];
+      };
+      distance_m: {
+        Args: { lat1: number; lat2: number; lng1: number; lng2: number };
+        Returns: number;
+      };
+      expire_offers: { Args: Record<PropertyKey, never>; Returns: number };
+      expire_tasks: { Args: Record<PropertyKey, never>; Returns: number };
       get_access_info: {
         Args: { target_task: string };
         Returns: {
@@ -1927,6 +1954,74 @@ export type Database = {
       };
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_assigned_cleaner: { Args: { target_task: string }; Returns: boolean };
+      lock_task: {
+        Args: { target_task: string };
+        Returns: {
+          accepted_at: string | null;
+          arrival_distance_m: number | null;
+          arrival_lat: number | null;
+          arrival_lng: number | null;
+          arrived_at: string | null;
+          cancel_reason: string | null;
+          cancelled_at: string | null;
+          cancelled_by: string | null;
+          checklist_template_id: string | null;
+          cleaner_id: string | null;
+          completed_at: string | null;
+          created_at: string;
+          extras: NonNullable<Json>;
+          id: string;
+          owner_id: string;
+          owner_notes: string | null;
+          payment_status: Database['public']['Enums']['payment_status'];
+          price_rsd: number | null;
+          property_id: string;
+          ready_at: string | null;
+          reservation_id: string | null;
+          status: Database['public']['Enums']['task_status'];
+          submitted_at: string | null;
+          type: Database['public']['Enums']['task_type'];
+          updated_at: string;
+          window_end: string;
+          window_start: string;
+        };
+        SetofOptions: {
+          from: '*';
+          to: 'cleaning_tasks';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      mark_ready: {
+        Args: { target_task: string };
+        Returns: Database['public']['Enums']['task_status'];
+      };
+      next_team_cleaner: { Args: { for_owner: string; target_task: string }; Returns: string };
+      notify: {
+        Args: {
+          body: string;
+          data?: Json;
+          notification_type: string;
+          target_user: string;
+          title: string;
+        };
+        Returns: undefined;
+      };
+      offer_task: {
+        Args: { target_task: string };
+        Returns: Database['public']['Enums']['task_status'];
+      };
+      offer_to: {
+        Args: {
+          cleaner: string;
+          task: Omit<
+            Database['public']['Tables']['cleaning_tasks']['Row'],
+            Database['public']['Tables']['cleaning_tasks']['ComputedFields']
+          >;
+        };
+        Returns: undefined;
+      };
+      open_dispute: { Args: { reason: string; target_task: string }; Returns: string };
       owns_property: { Args: { target_property: string }; Returns: boolean };
       owns_task: { Args: { target_task: string }; Returns: boolean };
       record_legal_acceptance: {
@@ -1939,7 +2034,27 @@ export type Database = {
         };
         Returns: undefined;
       };
+      request_fixes: {
+        Args: { note: string; target_task: string };
+        Returns: Database['public']['Enums']['task_status'];
+      };
       require_adult_signup: { Args: { event: Json }; Returns: Json };
+      require_cleaner: { Args: { cleaner: string }; Returns: undefined };
+      require_owner: { Args: { owner: string }; Returns: undefined };
+      require_status: {
+        Args: {
+          allowed: Database['public']['Enums']['task_status'][];
+          task: Omit<
+            Database['public']['Tables']['cleaning_tasks']['Row'],
+            Database['public']['Tables']['cleaning_tasks']['ComputedFields']
+          >;
+        };
+        Returns: undefined;
+      };
+      resolve_dispute: {
+        Args: { note: string; outcome: string; target_dispute: string };
+        Returns: Database['public']['Enums']['task_status'];
+      };
       safe_uuid: { Args: { value: string }; Returns: string };
       save_cleaner_profile: { Args: { payload: Json }; Returns: undefined };
       set_initial_roles: {
@@ -1956,6 +2071,14 @@ export type Database = {
           wifi_secret: string;
         };
         Returns: undefined;
+      };
+      submit_task: {
+        Args: { target_task: string };
+        Returns: Database['public']['Enums']['task_status'];
+      };
+      withdraw_task: {
+        Args: { target_task: string };
+        Returns: Database['public']['Enums']['task_status'];
       };
       write_audit: {
         Args: { action: string; data?: Json; entity: string; entity_id: string };

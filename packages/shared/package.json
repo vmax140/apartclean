@@ -10,7 +10,8 @@
     "./tailwind-preset": "./tailwind-preset.js",
     "./use-account": "./src/use-account.ts",
     "./property": "./src/property.ts",
-    "./cleaner": "./src/cleaner.ts"
+    "./cleaner": "./src/cleaner.ts",
+    "./task": "./src/task.ts"
   },
   "scripts": {
     "lint": "eslint .",
