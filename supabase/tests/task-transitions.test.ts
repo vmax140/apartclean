@@ -45,6 +45,14 @@ async function makeTask(overrides: { status?: string; startsInHours?: number; cl
   return id;
 }
 
+/**
+ * Od Faze 2D check_in prepisuje checklistu iz šablona, pa je predaja odbija dok
+ * nije završena. Testovi koji proveravaju druge stvari je ovde samo zatvore.
+ */
+async function finishChecklist(taskId: string) {
+  await admin`update task_checklist set is_done = true, done_at = now() where task_id = ${taskId}`;
+}
+
 async function statusOf(taskId: string) {
   const [row] = await admin`select status from cleaning_tasks where id = ${taskId}`;
   return row?.status as string;
@@ -92,6 +100,7 @@ describe('ceo put draft → completed (kriterijum završetka 2A)', () => {
     await admin`
       insert into task_photos (task_id, storage_path, sha256, captured_at, created_by)
       values (${task}, ${task + '/a.jpg'}, 'abc', now(), ${SEED.cleaner1})`;
+    await finishChecklist(task);
     seen.push(await callAs(SEED.cleaner1, (tx) => tx`select submit_task(${task}) as s`).then((r) => r[0]!.s));
     seen.push(await callAs(SEED.ownerA, (tx) => tx`select mark_ready(${task}) as s`).then((r) => r[0]!.s));
     seen.push(await callAs(SEED.ownerA, (tx) => tx`select complete_task(${task}) as s`).then((r) => r[0]!.s));
@@ -293,6 +302,7 @@ describe('rad na terenu', () => {
   it('predaja bez ijedne slike se odbija', async () => {
     const task = await accepted();
     await callAs(SEED.cleaner1, (tx) => tx`select check_in(${task}, 43.2847, 20.8103, null)`);
+    await finishChecklist(task);
     await expect(
       callAs(SEED.cleaner1, (tx) => tx`select submit_task(${task})`),
     ).rejects.toThrow(/NEMA_SLIKA/);
@@ -304,6 +314,7 @@ describe('rad na terenu', () => {
     await admin`
       insert into task_photos (task_id, storage_path, sha256, captured_at, created_by)
       values (${task}, ${task + '/c.jpg'}, 'ghi', now(), ${SEED.cleaner1})`;
+    await finishChecklist(task);
     await callAs(SEED.cleaner1, (tx) => tx`select submit_task(${task})`);
 
     await callAs(SEED.ownerA, (tx) => tx`select request_fixes(${task}, 'Ogledalo u kupatilu')`);
@@ -324,6 +335,7 @@ describe('zatvaranje i spor', () => {
     await admin`
       insert into task_photos (task_id, storage_path, sha256, captured_at, created_by)
       values (${task}, ${task + '/d.jpg'}, 'jkl', now(), ${SEED.cleaner1})`;
+    await finishChecklist(task);
     await callAs(SEED.cleaner1, (tx) => tx`select submit_task(${task})`);
     await callAs(SEED.ownerA, (tx) => tx`select mark_ready(${task})`);
     return task;

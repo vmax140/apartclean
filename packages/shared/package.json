@@ -12,7 +12,9 @@
     "./property": "./src/property.ts",
     "./cleaner": "./src/cleaner.ts",
     "./task": "./src/task.ts",
-    "./notification": "./src/notification.ts"
+    "./notification": "./src/notification.ts",
+    "./upload-queue": "./src/upload-queue.ts",
+    "./field": "./src/field.ts"
   },
   "scripts": {
     "lint": "eslint .",

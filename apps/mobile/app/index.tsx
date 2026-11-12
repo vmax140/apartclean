@@ -142,7 +142,9 @@ function ConfiguredAccount() {
             toggle={() => account.setActiveRole(role)} />)}
           {data.roles.includes('owner') && <Action label={t('property.title')}
             onPress={() => router.push('/apartmani')} />}
-          {data.roles.includes('cleaner') && <><Action label={t('offers.title')}
+          {data.roles.includes('cleaner') && <><Action label={t('today.title')}
+            onPress={() => router.push('/danas')} />
+          <Action label={t('offers.title')}
             onPress={() => router.push('/ponude')} />
           <Action label={t('schedule.title')}
             onPress={() => router.push('/raspored')} />

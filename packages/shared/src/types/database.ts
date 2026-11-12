@@ -1942,6 +1942,16 @@ export type Database = {
           wifi_password_encrypted: string;
         }[];
       };
+      get_access_info_for: {
+        Args: { cleaner: string; target_task: string };
+        Returns: {
+          key_instructions: string;
+          lockbox_code_encrypted: string;
+          property_id: string;
+          wifi_name: string;
+          wifi_password_encrypted: string;
+        }[];
+      };
       get_property_access_for_owner: {
         Args: { owner: string; target_property: string };
         Returns: {
@@ -1999,6 +2009,7 @@ export type Database = {
         Args: { target_task: string };
         Returns: Database['public']['Enums']['task_status'];
       };
+      materialize_checklist: { Args: { target_task: string }; Returns: number };
       next_team_cleaner: { Args: { for_owner: string; target_task: string }; Returns: string };
       notify: {
         Args: {
@@ -2047,6 +2058,15 @@ export type Database = {
       register_push_device: {
         Args: { device_platform: string; token: string };
         Returns: undefined;
+      };
+      report_property_issue: {
+        Args: {
+          category: Database['public']['Enums']['report_category'];
+          description: string;
+          photo_ids?: string[];
+          target_task: string;
+        };
+        Returns: string;
       };
       request_fixes: {
         Args: { note: string; target_task: string };
