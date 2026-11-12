@@ -1,0 +1,33 @@
+# Supabase Free pauzira projekat posle 7 dana neaktivnosti, a pauziran projekat
+# ne pokreće svoj pg_cron — zato ping mora da dođe spolja
+# (docs/DECISIONS.md, odluka 15).
+#
+# Podesi u Settings → Secrets and variables → Actions:
+#   SUPABASE_FUNCTIONS_URL  https://<ref>.supabase.co/functions/v1
+#   SUPABASE_ANON_KEY       anon ključ projekta
+#
+# Kapija traži i apikey i Authorization; sa samo jednim od njih vraća 401.
+name: Drži Supabase budnim
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pozovi health
+        env:
+          FUNCTIONS_URL: ${{ secrets.SUPABASE_FUNCTIONS_URL }}
+          ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          status=$(curl --silent --show-error --max-time 30 \
+            --output response.json --write-out '%{http_code}' \
+            --header "apikey: $ANON_KEY" \
+            --header "Authorization: Bearer $ANON_KEY" \
+            "$FUNCTIONS_URL/health")
+          echo "HTTP $status"
+          cat response.json
+          test "$status" = "200"
