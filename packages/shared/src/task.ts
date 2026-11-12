@@ -125,7 +125,15 @@ export function ownerActions(status: TaskStatus) {
   }
 }
 
-type RpcName = 'offer_task' | 'cancel_task' | 'mark_ready' | 'request_fixes' | 'complete_task';
+type RpcName =
+  | 'offer_task'
+  | 'cancel_task'
+  | 'mark_ready'
+  | 'request_fixes'
+  | 'complete_task'
+  | 'accept_offer'
+  | 'decline_offer'
+  | 'withdraw_task';
 
 async function runTransition(client: TaskClient, fn: RpcName, args: Record<string, unknown>) {
   const { error } = await client.rpc(fn, args as never);
@@ -151,4 +159,82 @@ export const completeTask = (client: TaskClient, id: string) =>
 export async function openDispute(client: TaskClient, id: string, reason: string) {
   const { error } = await client.rpc('open_dispute', { target_task: id, reason });
   if (error) throw new Error(error.message.split(':')[0] || 'TRANSITION_FAILED');
+}
+
+// ===== STRANA SPREMAČICE (Faza 2C) =====
+
+/** Ponude koje čekaju odgovor, sa rokom (SPEC sekcija 7 — ekran Ponude). */
+export async function listMyOffers(client: TaskClient) {
+  const { data, error } = await client
+    .from('task_offers')
+    // Mora biti jedan doslovan string: spajanje delova obara zaključivanje tipa.
+    .select('id,task_id,status,expires_at,proposed_price_rsd,cleaning_tasks(id,status,type,window_start,window_end,price_rsd,property_id,properties(name,complex_name,region_id))')
+    .eq('status', 'offered')
+    .order('expires_at');
+  if (error) throw new Error('OFFERS_LOAD_FAILED');
+  return data.map(shapeOffer).filter((row) => row.task !== null);
+}
+
+/**
+ * Otvoreni poslovi u regionima spremačice. RLS već propušta samo one koje sme
+ * da vidi, pa ovde nema dodatnog filtriranja po regionu.
+ */
+export async function listOpenTasks(client: TaskClient) {
+  const { data, error } = await client
+    .from('cleaning_tasks')
+    .select('id,status,type,window_start,window_end,price_rsd,property_id,properties(name,complex_name,region_id)')
+    .eq('status', 'open')
+    .order('window_start');
+  if (error) throw new Error('TASKS_LOAD_FAILED');
+  return data.map(shapeTask);
+}
+
+/** Prihvaćeni zadaci spremačice, poređani po terminu (ekran Raspored). */
+export async function listMySchedule(client: TaskClient) {
+  const { data, error } = await client
+    .from('cleaning_tasks')
+    .select('id,status,type,window_start,window_end,price_rsd,property_id,properties(name,complex_name,region_id)')
+    .in('status', ['accepted', 'in_progress', 'submitted', 'needs_fixes', 'ready'])
+    .order('window_start');
+  if (error) throw new Error('TASKS_LOAD_FAILED');
+  return data.map(shapeTask);
+}
+
+// Redovi iz različitih upita imaju različite oblike; ovde nam trebaju samo
+// zajednička polja, pa je ulaz namerno širok.
+type AnyRow = Record<string, unknown>;
+
+function shapeTask(row: AnyRow) {
+  const property = row.properties as { name: string; complex_name: string | null } | null;
+  return {
+    ...(row as unknown as Pick<Task, 'id' | 'status' | 'type' | 'window_start' | 'window_end' | 'price_rsd' | 'property_id'>),
+    propertyName: property?.name ?? '',
+    complexName: property?.complex_name ?? null,
+  };
+}
+
+function shapeOffer(row: AnyRow) {
+  const task = row.cleaning_tasks as AnyRow | null;
+  return {
+    id: row.id as string,
+    taskId: row.task_id as string,
+    expiresAt: row.expires_at as string | null,
+    proposedPrice: row.proposed_price_rsd as number | null,
+    task: task ? shapeTask(task) : null,
+  };
+}
+
+export const acceptOffer = (client: TaskClient, taskId: string) =>
+  runTransition(client, 'accept_offer', { target_task: taskId });
+
+export const declineOffer = (client: TaskClient, taskId: string) =>
+  runTransition(client, 'decline_offer', { target_task: taskId });
+
+export const withdrawTask = (client: TaskClient, taskId: string) =>
+  runTransition(client, 'withdraw_task', { target_task: taskId });
+
+/** Preostalo vreme ponude u minutima; negativno znači da je rok prošao. */
+export function minutesLeft(expiresAt: string | null) {
+  if (!expiresAt) return null;
+  return Math.round((new Date(expiresAt).getTime() - Date.now()) / 60000);
 }

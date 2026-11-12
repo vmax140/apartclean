@@ -1927,8 +1927,11 @@ export type Database = {
         Args: { lat1: number; lat2: number; lng1: number; lng2: number };
         Returns: number;
       };
+      drop_push_device: { Args: { token: string }; Returns: undefined };
+      ensure_task_for_reservation: { Args: { target_reservation: string }; Returns: string };
       expire_offers: { Args: Record<PropertyKey, never>; Returns: number };
       expire_tasks: { Args: Record<PropertyKey, never>; Returns: number };
+      flag_no_shows: { Args: Record<PropertyKey, never>; Returns: number };
       get_access_info: {
         Args: { target_task: string };
         Returns: {
@@ -2024,6 +2027,13 @@ export type Database = {
       open_dispute: { Args: { reason: string; target_task: string }; Returns: string };
       owns_property: { Args: { target_property: string }; Returns: boolean };
       owns_task: { Args: { target_task: string }; Returns: boolean };
+      publish_due_reviews: { Args: Record<PropertyKey, never>; Returns: number };
+      purge_stale_devices: { Args: Record<PropertyKey, never>; Returns: number };
+      record_calendar_error: {
+        Args: { message: string; target_calendar: string };
+        Returns: undefined;
+      };
+      record_delivery: { Args: { delivery: Json; notification_id: string }; Returns: undefined };
       record_legal_acceptance: {
         Args: {
           client_agent: string;
@@ -2032,6 +2042,10 @@ export type Database = {
           document_ids: string[];
           target_user: string;
         };
+        Returns: undefined;
+      };
+      register_push_device: {
+        Args: { device_platform: string; token: string };
         Returns: undefined;
       };
       request_fixes: {
@@ -2076,6 +2090,7 @@ export type Database = {
         Args: { target_task: string };
         Returns: Database['public']['Enums']['task_status'];
       };
+      sync_reservations: { Args: { events: Json; target_calendar: string }; Returns: Json };
       withdraw_task: {
         Args: { target_task: string };
         Returns: Database['public']['Enums']['task_status'];

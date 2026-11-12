@@ -11,7 +11,8 @@
     "./use-account": "./src/use-account.ts",
     "./property": "./src/property.ts",
     "./cleaner": "./src/cleaner.ts",
-    "./task": "./src/task.ts"
+    "./task": "./src/task.ts",
+    "./notification": "./src/notification.ts"
   },
   "scripts": {
     "lint": "eslint .",

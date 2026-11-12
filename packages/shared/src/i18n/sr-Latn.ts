@@ -255,6 +255,36 @@ export const srLatn = {
   'error.RAZLOG_OBAVEZAN': 'Razlog je obavezan.',
   'error.ROK_ISTEKAO': 'Rok je istekao.',
   'error.ZADATAK_NE_POSTOJI': 'Zadatak nije pronađen.',
+
+  'offers.title': 'Ponude',
+  'offers.none': 'Trenutno nema ponuda za tebe.',
+  'offers.expiresIn': 'Rok: još {minuta} min',
+  'offers.expired': 'Rok je istekao',
+  'offers.accept': 'Prihvati',
+  'offers.decline': 'Odbij',
+  'offers.openMarket': 'Otvoreni poslovi u tvom regionu',
+  'offers.noOpen': 'Nema otvorenih poslova.',
+  'offers.take': 'Uzmi posao',
+  'offers.failed': 'Radnja nije prošla.',
+  'offers.taken': 'Neko je bio brži.',
+
+  'schedule.title': 'Raspored',
+  'schedule.none': 'Nemaš zakazanih poslova.',
+  'schedule.today': 'Danas',
+  'schedule.tomorrow': 'Sutra',
+  'schedule.withdraw': 'Odustani',
+  'schedule.withdrawWarning': 'Odustajanje pre dolaska smanjuje tvoju pouzdanost.',
+
+  'notifications.title': 'Obaveštenja',
+  'notifications.none': 'Nema obaveštenja.',
+  'notifications.markAll': 'Označi sve kao pročitano',
+  'notifications.unread': 'Nepročitano: {broj}',
+  'notifications.loadFailed': 'Ne mogu da učitam obaveštenja.',
+
+  'push.enable': 'Uključi obaveštenja',
+  'push.enabled': 'Obaveštenja su uključena.',
+  'push.denied': 'Bez dozvole nema obaveštenja o novim ponudama.',
+  'push.unsupported': 'Push radi samo u razvojnom buildu, ne u Expo Go.',
 } as const;
 
 export type TranslationKey = keyof typeof srLatn;
